@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  h1 {
+    text-align: center;
+    margin: 1rem 0 0.5rem;
+  }
+  
+  #controls {
+    padding: 0.5rem 1rem;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+  
+  #map {
+    flex: 1;
+    height: 100%;
+  }
+  
+  #geohash-output {
+    margin-top: 0.5rem;
+    font-weight: bold;
+  }
