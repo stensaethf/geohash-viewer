@@ -35,18 +35,18 @@ body {
 
 #resetButton,
 #backButton,
-#goButton {
+#geohashInputButton {
   padding: 8px 12px;
   margin-top: 10px;
   font-size: 14px;
   cursor: pointer;
 }
 
-#goBox {
+#geohashInputBox {
   margin-top: 10px;
 }
 
-#goInput {
+#geohashInput {
   width: 140px;
   padding: 8px 12px;
   font-size: 14px;

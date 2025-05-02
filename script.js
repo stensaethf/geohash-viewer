@@ -14,6 +14,7 @@ let currentGeohash = "";
 const geohashDisplay = document.getElementById("geohash");
 const backButton = document.getElementById("backButton");
 const resetButton = document.getElementById("resetButton");
+const geohashInput = document.getElementById("geohashInput");
 
 function drawGeohashGrid() {
   rectangles.forEach((obj) => {
@@ -122,13 +123,16 @@ function getPrecisionForZoom(zoom) {
 
 resetButton.addEventListener("click", () => {
   resetMap();
+  
+  // clear input
+  geohashInput.value = "";
 });
 
 function resetMap() {
-  updateView("", null, null);
+  updateView("");
 }
 
-function updateView(hash, bounds_sw, bounds_ne) {
+function updateView(hash) {
   currentGeohash = hash;
 
   if (currentGeohash == "") {
@@ -136,7 +140,11 @@ function updateView(hash, bounds_sw, bounds_ne) {
     map.setView([0, 0], 2);
     geohashDisplay.textContent = "Click a grid cell";
   } else {
-    map.fitBounds([bounds_sw, bounds_ne]);
+    const decoded = decodeGeoHash(currentGeohash);
+    const sw = [decoded.latitude[0], decoded.longitude[0]];
+    const ne = [decoded.latitude[1], decoded.longitude[1]];
+
+    map.fitBounds([sw, ne]);
     geohashDisplay.textContent = currentGeohash;
   }
 
@@ -153,13 +161,22 @@ backButton.addEventListener("click", () => {
     // Decrease the precision by trimming one character
     currentGeohash = currentGeohash.slice(0, -1);
 
-    // Recalculate bounds based on the updated geohash
-    const decoded = decodeGeoHash(currentGeohash);
-    const sw = [decoded.latitude[0], decoded.longitude[0]];
-    const ne = [decoded.latitude[1], decoded.longitude[1]];
-
-    updateView(currentGeohash, sw, ne);
+    updateView(currentGeohash);
   }
+});
+
+document.getElementById("geohashInputButton").addEventListener("click", () => {
+  const input = document
+    .getElementById("geohashInput")
+    .value.trim()
+    .toLowerCase();
+
+  if (!/^[0123456789bcdefghjkmnpqrstuvwxyz]{1,8}$/.test(input)) {
+    alert("Invalid geohash (1–8 letters and numbers only).");
+    return;
+  }
+
+  updateView(input);
 });
 
 map.on("moveend", drawGeohashGrid);
