@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Geohash Viewer</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="libs/geohash.js"></script>
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-</head>
-<body>
-  <div id="container">
-    <div id="map"></div>
-    <div id="info">
-      <h2>Geohash Info</h2>
-      <p><strong>Selected:</strong> <span id="geohash">Click a point</span></p>
-      <div id="sidebar">
-        <h2>Selected Geohash</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geohash Viewer</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="libs/geohash.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="map"></div>
+      <div id="info">
+        <h1>Geohash Viewer</h1>
+        <p><strong>Selected Geohash:</strong></p>
         <p id="geohash">Click a grid cell</p>
-        <button id="backToWorldViewBtn">Back to World View</button>
+        <button id="backButton">Back</button>
+        <button id="resetButton">Reset</button>
       </div>
     </div>
-  </div>
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

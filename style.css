@@ -33,7 +33,7 @@ body {
   display: inline-block; /* Ensure text behaves like a block element */
 }
 
-#backToWorldViewBtn {
+#resetButton, #backButton {
   padding: 8px 12px;
   margin-top: 10px;
   font-size: 14px;

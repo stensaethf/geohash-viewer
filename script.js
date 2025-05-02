@@ -122,23 +122,20 @@ function getPrecisionForZoom(zoom) {
   return 5; // feel free to increase if needed
 }
 
-document
-  .getElementById("backToWorldViewBtn")
-  .addEventListener("click", resetMap);
+document.getElementById("resetButton").addEventListener("click", resetMap);
 
-// Define the 'Back to World View' function
-function resetMap() {
+function resetMap(zoom) {
   // Reset to initial global view
   map.setView([0, 0], 2); // Adjust this zoom level as needed for your global view
 
   selectedRectangle = null;
   currentGeohash = "";
 
-  drawGeohashGrid();
-
   // Reset the displayed geohash label to prompt
-  geohashDisplay.textContent = "Click a point";
-}
+  geohashDisplay.textContent = "Click a grid cell";
+
+  drawGeohashGrid();
+};
 
 map.on("moveend", drawGeohashGrid);
 
