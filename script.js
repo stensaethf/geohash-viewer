@@ -53,7 +53,7 @@ function drawGeohashGrid() {
     const labelChar = precision === 1 ? hash : hash[hash.length - 1];
 
     const rect = L.rectangle([sw, ne], {
-      color: "#888",
+      color: "blue",
       weight: 1,
       fillOpacity: 0,
       interactive: true,
@@ -62,9 +62,9 @@ function drawGeohashGrid() {
     const label = L.marker(center, {
       icon: L.divIcon({
         className: "geohash-label",
-        html: labelChar, // the geohash character for the current level
-        iconSize: [30, 30], // Adjust size of the label to be more consistent
-        iconAnchor: [15, 15], // Anchor the text to the center of the icon
+        html: labelChar,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
       }),
       interactive: false,
     }).addTo(map);
@@ -104,8 +104,8 @@ function drawSingleGeohashCell(hash) {
     icon: L.divIcon({
       className: "geohash-label",
       html: hash,
-      iconSize: [50, 20], // Control the label size
-      iconAnchor: [25, 10], // Center horizontally at the top
+      iconSize: [50, 20],
+      iconAnchor: [25, 10],
     }),
     interactive: false,
   }).addTo(map);
@@ -118,7 +118,7 @@ function getPrecisionForZoom(zoom) {
   if (zoom <= 4) return 2;
   if (zoom <= 6) return 3;
   if (zoom <= 8) return 4;
-  return 5; // feel free to increase if needed
+  return 5;
 }
 
 resetButton.addEventListener("click", () => {

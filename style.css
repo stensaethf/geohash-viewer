@@ -23,14 +23,14 @@ body {
 }
 
 .geohash-label {
-  font-size: 16px; /* Make the text larger */
-  font-weight: bold; /* Make the text bold */
-  color: #333; /* Change text color for better contrast */
-  background-color: transparent; /* Remove the white background */
-  padding: 3px; /* Optional: add a little padding around the text */
-  text-align: center; /* Center the text horizontally */
-  line-height: 1; /* Prevent text from stretching vertically */
-  display: inline-block; /* Ensure text behaves like a block element */
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  background-color: transparent;
+  padding: 3px;
+  text-align: center;
+  line-height: 1;
+  display: inline-block;
 }
 
 #resetButton,
