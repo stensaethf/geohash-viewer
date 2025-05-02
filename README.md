@@ -18,6 +18,8 @@ Some example Geohashes:
 - Mumbai: te7u
 - The bay area: 9q9
 
+Fun little side project to test out ChatGPT/ copilot
+
 <img width="1260" alt="Screenshot 2025-05-02 at 16 06 03" src="https://github.com/user-attachments/assets/787434d6-095a-4157-b238-d9c74bd26766" />
 
 <img width="1261" alt="Screenshot 2025-05-02 at 16 11 47" src="https://github.com/user-attachments/assets/f8b56483-8265-4530-9bed-8e91ed74deb3" />
