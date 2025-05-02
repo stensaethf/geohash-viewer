@@ -6,6 +6,8 @@
   <title>Geohash Viewer</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="libs/geohash.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
   <div id="container">
@@ -13,14 +15,13 @@
     <div id="info">
       <h2>Geohash Info</h2>
       <p><strong>Selected:</strong> <span id="geohash">Click a point</span></p>
-      <p><strong>Precision:</strong> <span id="precision-value">6</span></p>
-      <label for="precision">Adjust Precision:</label>
-      <input type="range" id="precision" min="1" max="12" value="6" />
+      <div id="sidebar">
+        <h2>Selected Geohash</h2>
+        <p id="geohash">Click a grid cell</p>
+        <button id="resetViewBtn">Back to World View</button>
+      </div>
     </div>
   </div>
-
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/geohash.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,76 +1,106 @@
-const map = L.map('map').setView([0, 0], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+const map = L.map("map", {
+    zoomControl: false,         // hide zoom buttons
+    scrollWheelZoom: false,     // disable scroll zoom
+    doubleClickZoom: false,     // disable double click zoom
+    boxZoom: false,             // disable box zoom
+    touchZoom: false,           // disable pinch zoom
+    dragging: false             // disable dragging
+  }).setView([0, 0], 2);         // start with full world view
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 let rectangles = [];
 let selectedRectangle = null;
 
 const geohashDisplay = document.getElementById("geohash");
-const precisionSlider = document.getElementById("precision");
-const precisionValue = document.getElementById("precision-value");
-
-precisionSlider.addEventListener("input", () => {
-  precisionValue.textContent = precisionSlider.value;
-  drawGeohashGrid(); // Redraw grid at new precision
-});
-
-// Draw grid whenever map is moved or zoomed
-map.on("moveend", drawGeohashGrid);
-
-// Handle map click for selection
-map.on("click", function (e) {
-  const { lat, lng } = e.latlng;
-  const precision = parseInt(precisionSlider.value, 10);
-  const hash = Geohash.encode(lat, lng, precision);
-  const bounds = Geohash.bounds(hash);
-
-  if (selectedRectangle) {
-    map.removeLayer(selectedRectangle);
-  }
-
-  const sw = [bounds.sw.lat, bounds.sw.lon];
-  const ne = [bounds.ne.lat, bounds.ne.lon];
-
-  selectedRectangle = L.rectangle([sw, ne], { color: "#ff0000", weight: 2 }).addTo(map);
-  geohashDisplay.textContent = hash;
-});
 
 function drawGeohashGrid() {
-  // Clear existing rectangles
-  rectangles.forEach(r => map.removeLayer(r));
+  // Clear old rectangles and labels
+  rectangles.forEach((obj) => {
+    map.removeLayer(obj.rect);
+    map.removeLayer(obj.label);
+  });
   rectangles = [];
 
   const bounds = map.getBounds();
-  const precision = parseInt(precisionSlider.value, 10);
+  const zoom = map.getZoom();
+  const precision = getPrecisionForZoom(zoom);
 
-  // Get bounding box corners
   const minLat = bounds.getSouth();
   const maxLat = bounds.getNorth();
   const minLng = bounds.getWest();
   const maxLng = bounds.getEast();
 
-  const step = 0.05; // Small step to loop through lat/lon values
-
   const seen = new Set();
+  const MAX_CELLS = 800;
 
-  for (let lat = minLat; lat <= maxLat; lat += step) {
-    for (let lng = minLng; lng <= maxLng; lng += step) {
-      const hash = Geohash.encode(lat, lng, precision);
-      if (seen.has(hash)) continue; // Avoid duplicates
+  let count = 0;
+
+  const stepSize = (maxLat - minLat) / 30; // roughly 30 rows
+
+  for (let lat = minLat; lat <= maxLat; lat += stepSize) {
+    for (let lng = minLng; lng <= maxLng; lng += stepSize) {
+      const hash = encodeGeoHash(lat, lng).substring(0, precision);
+      if (seen.has(hash)) continue;
       seen.add(hash);
+      if (++count > MAX_CELLS) return;
 
-      const cell = Geohash.bounds(hash);
-      const cellSW = [cell.sw.lat, cell.sw.lon];
-      const cellNE = [cell.ne.lat, cell.ne.lon];
-      const rect = L.rectangle([cellSW, cellNE], {
+      const decoded = decodeGeoHash(hash);
+      const cell = {
+        sw: { lat: decoded.latitude[0], lon: decoded.longitude[0] },
+        ne: { lat: decoded.latitude[1], lon: decoded.longitude[1] },
+      };
+
+      const sw = [cell.sw.lat, cell.sw.lon];
+      const ne = [cell.ne.lat, cell.ne.lon];
+      const center = [
+        (cell.sw.lat + cell.ne.lat) / 2,
+        (cell.sw.lon + cell.ne.lon) / 2,
+      ];
+
+      const rect = L.rectangle([sw, ne], {
         color: "#888",
         weight: 1,
         fillOpacity: 0,
+        interactive: true,
+      }).addTo(map);
+      
+      rect.on("click", () => {
+        map.fitBounds([sw, ne]); // zoom into the cell bounds
+        document.getElementById("geohash").textContent = hash;
       });
-      rect.addTo(map);
-      rectangles.push(rect);
+
+      const label = L.marker(center, {
+        icon: L.divIcon({
+          className: "geohash-label",
+          html: hash,
+          iconSize: null,
+        }),
+        interactive: false,
+      }).addTo(map);
+
+      rectangles.push({ rect, label, bounds: [[cell.sw.lat, cell.sw.lon], [cell.ne.lat, cell.ne.lon]], hash });
     }
   }
 }
 
-// Initial grid
-drawGeohashGrid();
+map.on("moveend", drawGeohashGrid);
+// map.on("click", function (e) {
+//   const hash = encodeGeoHash(e.latlng.lat, e.latlng.lng);
+//   document.getElementById("geohash").textContent = hash;
+// });
+
+function getPrecisionForZoom(zoom) {
+    if (zoom <= 2) return 1;      // <-- start at top-level 32 regions
+    if (zoom <= 4) return 2;
+    if (zoom <= 6) return 3;
+    if (zoom <= 8) return 4;
+    return 5;                     // feel free to increase if needed
+  }
+
+document.getElementById("resetViewBtn").addEventListener("click", () => {
+    map.setView([0, 0], 2); // Reset to initial view
+    drawGeohashGrid();      // Redraw coarse grid
+    document.getElementById("geohash").textContent = "Click a grid cell";
+  });
+
+drawGeohashGrid(); // Draw grid on load
