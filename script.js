@@ -9,10 +9,11 @@ const map = L.map("map", {
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 let rectangles = [];
-let selectedRectangle = null;
 let currentGeohash = "";
 
 const geohashDisplay = document.getElementById("geohash");
+const backButton = document.getElementById("backButton");
+const resetButton = document.getElementById("resetButton");
 
 function drawGeohashGrid() {
   rectangles.forEach((obj) => {
@@ -71,10 +72,7 @@ function drawGeohashGrid() {
 
     rect.on("click", () => {
       if (hash.length > 8) return;
-      currentGeohash = hash;
-      map.fitBounds([sw, ne]);
-      geohashDisplay.textContent = currentGeohash;
-      drawGeohashGrid();
+      updateView(hash, sw, ne);
     });
   }
 }
@@ -122,20 +120,47 @@ function getPrecisionForZoom(zoom) {
   return 5; // feel free to increase if needed
 }
 
-document.getElementById("resetButton").addEventListener("click", resetMap);
+resetButton.addEventListener("click", () => {
+  resetMap();
+});
 
-function resetMap(zoom) {
-  // Reset to initial global view
-  map.setView([0, 0], 2); // Adjust this zoom level as needed for your global view
+function resetMap() {
+  updateView("", null, null);
+}
 
-  selectedRectangle = null;
-  currentGeohash = "";
+function updateView(hash, bounds_sw, bounds_ne) {
+  currentGeohash = hash;
 
-  // Reset the displayed geohash label to prompt
-  geohashDisplay.textContent = "Click a grid cell";
+  if (currentGeohash == "") {
+    // Reset map
+    map.setView([0, 0], 2);
+    geohashDisplay.textContent = "Click a grid cell";
+  } else {
+    map.fitBounds([bounds_sw, bounds_ne]);
+    geohashDisplay.textContent = currentGeohash;
+  }
+
+  backButton.disabled = currentGeohash.length == 0;
+  resetButton.disabled = currentGeohash.length == 0;
 
   drawGeohashGrid();
-};
+}
+
+backButton.addEventListener("click", () => {
+  if (currentGeohash.length == 1) {
+    resetMap();
+  } else if (currentGeohash.length > 1) {
+    // Decrease the precision by trimming one character
+    currentGeohash = currentGeohash.slice(0, -1);
+
+    // Recalculate bounds based on the updated geohash
+    const decoded = decodeGeoHash(currentGeohash);
+    const sw = [decoded.latitude[0], decoded.longitude[0]];
+    const ne = [decoded.latitude[1], decoded.longitude[1]];
+
+    updateView(currentGeohash, sw, ne);
+  }
+});
 
 map.on("moveend", drawGeohashGrid);
 
