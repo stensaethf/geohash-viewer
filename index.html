@@ -8,13 +8,16 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <h1>Geohash Viewer</h1>
-  <div id="controls">
-    <label for="precision">Precision: <span id="precision-value">6</span></label>
-    <input type="range" id="precision" min="1" max="12" value="6" />
-    <div id="geohash-output">Click on the map to generate a Geohash.</div>
+  <div id="container">
+    <div id="map"></div>
+    <div id="info">
+      <h2>Geohash Info</h2>
+      <p><strong>Selected:</strong> <span id="geohash">Click a point</span></p>
+      <p><strong>Precision:</strong> <span id="precision-value">6</span></p>
+      <label for="precision">Adjust Precision:</label>
+      <input type="range" id="precision" min="1" max="12" value="6" />
+    </div>
   </div>
-  <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/geohash.js"></script>
