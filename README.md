@@ -1,6 +1,6 @@
 # geohash-viewer
 
-[Geohash-viewer](https://stensaethf.github.io/geohash-viewer/) is a dynamic tool for visually exploring Geohashes.
+[Geohash Viewer](https://stensaethf.github.io/geohash-viewer/) is a dynamic tool for visually exploring Geohashes.
 
 Click on a grid cell to discover the Geohash for your chosen location, or enter a Geohash to jump directly to it!
 
